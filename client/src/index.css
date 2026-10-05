@@ -69,21 +69,21 @@
   
   /* Scrollbar styles */
   ::-webkit-scrollbar {
-    @apply w-2 h-2;
+    @apply w-1.5 h-1.5;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-slate-100;
+    @apply bg-transparent;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-slate-300 rounded-full border-2 border-slate-100 hover:bg-slate-400 transition;
+    @apply bg-slate-300/60 rounded-full hover:bg-slate-400/60 transition;
   }
 }
 
-/* Reveal transition classes */
+/* ─── Reveal Transitions ────────────────────────────────────────── */
 .reveal {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(24px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal.is-visible {
@@ -91,17 +91,67 @@
   transform: translateY(0);
 }
 
-/* Animations */
+/* ─── Animations ────────────────────────────────────────────────── */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .animate-fadeIn {
   animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Premium card hover effects */
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slideInLeft {
+  animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Staggered children animation */
+.stagger-children > * {
+  opacity: 0;
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-children > *:nth-child(8) { animation-delay: 0.4s; }
+
+/* ─── Premium Card Effects ──────────────────────────────────────── */
 .glow-card {
   @apply relative overflow-hidden bg-white border border-slate-100/80 rounded-3xl transition-all duration-300 shadow-sm shadow-slate-100/50;
 }
@@ -110,12 +160,27 @@
   @apply border-teal-500/30 shadow-2xl shadow-teal-500/8 -translate-y-1.5;
 }
 
-/* Spinner */
+.glow-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transition: left 0.7s ease;
+}
+
+.glow-card:hover::before {
+  left: 100%;
+}
+
+/* ─── Spinner ───────────────────────────────────────────────────── */
 .spinner {
   @apply animate-spin rounded-full h-4 w-4 border-2 border-slate-200 border-t-teal-600 inline-block align-middle mr-2;
 }
 
-/* Glassmorphism & Hover Animations */
+/* ─── Glassmorphism ─────────────────────────────────────────────── */
 .glass-card {
   background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(20px);
@@ -124,6 +189,7 @@
   box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.04);
 }
 
+/* ─── Gradient Text ─────────────────────────────────────────────── */
 .text-gradient {
   background: linear-gradient(135deg, var(--color-teal-600) 0%, var(--color-blue-700) 100%);
   -webkit-background-clip: text;
@@ -131,6 +197,14 @@
   background-clip: text;
 }
 
+.text-gradient-warm {
+  background: linear-gradient(135deg, var(--color-amber-500) 0%, #ef4444 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Float Animations ──────────────────────────────────────────── */
 @keyframes float {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
   50% { transform: translateY(-10px) rotate(1deg); }
@@ -149,13 +223,13 @@
   animation: float-slow 8s ease-in-out infinite;
 }
 
-/* Dynamic Pulsing Glow for CTAs */
+/* ─── Dynamic Pulsing Glow for CTAs ─────────────────────────────── */
 @keyframes pulseGlow {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4);
+    box-shadow: 0 0 0 0 rgba(0, 168, 150, 0.4);
   }
   50% {
-    box-shadow: 0 0 20px 4px rgba(13, 148, 136, 0.15);
+    box-shadow: 0 0 20px 4px rgba(0, 168, 150, 0.15);
   }
 }
 
@@ -163,3 +237,118 @@
   animation: pulseGlow 3s infinite;
 }
 
+/* ─── Shimmer Button Effect ─────────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 100%
+  );
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* ─── Section Divider Waves ─────────────────────────────────────── */
+.section-divider {
+  position: relative;
+  overflow: hidden;
+}
+
+.section-divider::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23f8fafc' d='M0,20 C360,60 1080,0 1440,20 L1440,60 L0,60 Z'/%3E%3C/svg%3E") no-repeat;
+  background-size: cover;
+  pointer-events: none;
+}
+
+.section-divider-white::after {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23ffffff' d='M0,20 C360,60 1080,0 1440,20 L1440,60 L0,60 Z'/%3E%3C/svg%3E") no-repeat;
+  background-size: cover;
+}
+
+.section-divider-teal::after {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23f0fdfa' d='M0,20 C360,60 1080,0 1440,20 L1440,60 L0,60 Z'/%3E%3C/svg%3E") no-repeat;
+  background-size: cover;
+}
+
+/* ─── Pulse Dot ─────────────────────────────────────────────────── */
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.5); }
+}
+
+.pulse-dot {
+  @apply inline-block w-2 h-2 rounded-full;
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+.pulse-dot-success { @apply bg-emerald-500; }
+.pulse-dot-warning { @apply bg-amber-500; }
+.pulse-dot-danger { @apply bg-rose-500; }
+
+/* ─── Gradient Border Card ──────────────────────────────────────── */
+.gradient-border-card {
+  position: relative;
+  background: white;
+  border-radius: 1.5rem;
+  overflow: hidden;
+}
+
+.gradient-border-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--color-teal-400), var(--color-blue-500), var(--color-teal-600));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.gradient-border-card:hover::before {
+  opacity: 1;
+}
+
+/* ─── Hover Lift ────────────────────────────────────────────────── */
+.hover-lift {
+  @apply transition-all duration-300;
+}
+
+.hover-lift:hover {
+  @apply -translate-y-1 shadow-lg;
+}
+
+/* ─── Skeleton Loading Pulse ────────────────────────────────────── */
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+.skeleton-pulse {
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+  @apply bg-slate-200 rounded-lg;
+}

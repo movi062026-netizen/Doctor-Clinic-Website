@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import Header from './components/Header.jsx'
 import Hero from './components/Hero.jsx'
@@ -16,6 +16,7 @@ import Footer from './components/Footer.jsx'
 import WhatsAppFloat from './components/WhatsAppFloat.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx'
 import InteractiveBackground from './components/InteractiveBackground.jsx'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
 import Treatments from './pages/Treatments.jsx'
 import TreatmentDetailPage from './pages/TreatmentDetailPage.jsx'
 import DoctorsPage from './pages/DoctorsPage.jsx'
@@ -107,91 +108,103 @@ function Home() {
   )
 }
 
+// Component that conditionally renders Footer based on route
+function ConditionalFooter() {
+  const location = useLocation()
+  const dashboardPaths = ['/dashboard', '/doctor', '/admin']
+  const isDashboard = dashboardPaths.some((p) => location.pathname.startsWith(p))
+  
+  if (isDashboard) return null
+  return <Footer />
+}
+
 export default function App() {
   return (
-    <BrowserRouter>
-      <InteractiveBackground />
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/treatments" element={<Treatments />} />
-        <Route path="/treatments/:slug" element={<TreatmentDetailPage />} />
-        <Route path="/doctors" element={<DoctorsPage />} />
-        <Route path="/doctors/:id" element={<DoctorDetailPage />} />
-        <Route path="/booking" element={<BookAppointmentPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
-        <Route path="/blogs" element={<BlogPage />} />
-        <Route path="/blogs/:slug" element={<BlogDetailPage />} />
-        <Route path="/success-stories" element={<SuccessStoriesPage />} />
-        <Route path="/reviews" element={<ReviewsPage />} />
-        <Route path="/free-consultation" element={<FreeConsultationPage />} />
+    <ErrorBoundary>
+      <BrowserRouter>
+        <InteractiveBackground />
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/treatments" element={<Treatments />} />
+          <Route path="/treatments/:slug" element={<TreatmentDetailPage />} />
+          <Route path="/doctors" element={<DoctorsPage />} />
+          <Route path="/doctors/:id" element={<DoctorDetailPage />} />
+          <Route path="/booking" element={<BookAppointmentPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+          <Route path="/blogs" element={<BlogPage />} />
+          <Route path="/blogs/:slug" element={<BlogDetailPage />} />
+          <Route path="/success-stories" element={<SuccessStoriesPage />} />
+          <Route path="/reviews" element={<ReviewsPage />} />
+          <Route path="/free-consultation" element={<FreeConsultationPage />} />
 
-        {/* Patient Dashboard */}
-        <Route 
-          path="/dashboard" 
-          element={
-            <ProtectedRoute allowedRoles={['patient']}>
-              <PatientLayout />
-            </ProtectedRoute>
-          } 
-        >
-          <Route index element={<PatientOverview />} />
-          <Route path="appointments" element={<PatientAppointments />} />
-          <Route path="profile" element={<PatientProfile />} />
-          <Route path="reviews" element={<PatientReviews />} />
-          <Route path="notifications" element={<PatientNotifications />} />
-        </Route>
+          {/* Patient Dashboard */}
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute allowedRoles={['patient']}>
+                <PatientLayout />
+              </ProtectedRoute>
+            } 
+          >
+            <Route index element={<PatientOverview />} />
+            <Route path="appointments" element={<PatientAppointments />} />
+            <Route path="profile" element={<PatientProfile />} />
+            <Route path="reviews" element={<PatientReviews />} />
+            <Route path="notifications" element={<PatientNotifications />} />
+          </Route>
 
-        {/* Doctor Dashboard */}
-        <Route 
-          path="/doctor" 
-          element={
-            <ProtectedRoute allowedRoles={['doctor']}>
-              <DoctorLayout />
-            </ProtectedRoute>
-          } 
-        >
-          <Route index element={<DoctorOverview />} />
-          <Route path="appointments" element={<DoctorAppointments />} />
-          <Route path="profile" element={<DoctorProfile />} />
-          <Route path="availability" element={<DoctorAvailability />} />
-          <Route path="patients" element={<DoctorPatients />} />
-          <Route path="reviews" element={<DoctorReviews />} />
-        </Route>
+          {/* Doctor Dashboard */}
+          <Route 
+            path="/doctor" 
+            element={
+              <ProtectedRoute allowedRoles={['doctor']}>
+                <DoctorLayout />
+              </ProtectedRoute>
+            } 
+          >
+            <Route index element={<DoctorOverview />} />
+            <Route path="appointments" element={<DoctorAppointments />} />
+            <Route path="profile" element={<DoctorProfile />} />
+            <Route path="availability" element={<DoctorAvailability />} />
+            <Route path="patients" element={<DoctorPatients />} />
+            <Route path="reviews" element={<DoctorReviews />} />
+          </Route>
 
-        {/* Admin Dashboard */}
-        <Route 
-          path="/admin" 
-          element={
-            <ProtectedRoute allowedRoles={['admin']}>
-              <AdminLayout />
-            </ProtectedRoute>
-          } 
-        >
-          <Route index element={<AdminOverview />} />
-          <Route path="appointments" element={<AdminAppointments />} />
-          <Route path="doctors" element={<AdminDoctors />} />
-          <Route path="patients" element={<AdminPatients />} />
-          <Route path="reviews" element={<AdminReviews />} />
-          <Route path="consultations" element={<AdminConsultations />} />
-          <Route path="contacts" element={<AdminContacts />} />
-          <Route path="blogs" element={<AdminBlogs />} />
-          <Route path="settings" element={<AdminSettings />} />
-        </Route>
+          {/* Admin Dashboard */}
+          <Route 
+            path="/admin" 
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminLayout />
+              </ProtectedRoute>
+            } 
+          >
+            <Route index element={<AdminOverview />} />
+            <Route path="appointments" element={<AdminAppointments />} />
+            <Route path="doctors" element={<AdminDoctors />} />
+            <Route path="patients" element={<AdminPatients />} />
+            <Route path="reviews" element={<AdminReviews />} />
+            <Route path="consultations" element={<AdminConsultations />} />
+            <Route path="contacts" element={<AdminContacts />} />
+            <Route path="blogs" element={<AdminBlogs />} />
+            <Route path="settings" element={<AdminSettings />} />
+          </Route>
 
-        <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/terms" element={<TermsPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-      <Footer />
-      <WhatsAppFloat />
-      <ScrollToTop />
-      <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
-    </BrowserRouter>
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+        <ConditionalFooter />
+        <WhatsAppFloat />
+        <ScrollToTop />
+        <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
+      </BrowserRouter>
+    </ErrorBoundary>
   )
 }
